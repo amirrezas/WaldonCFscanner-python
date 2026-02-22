@@ -3,7 +3,8 @@ import subprocess
 import os
 import urllib.request
 import zipfile
-
+import platform
+import json
 
 def ensure_xray_core():
     """Automatically downloads and extracts the latest Xray-core if missing."""
@@ -110,11 +111,11 @@ import ipaddress
 import csv
 import json
 import tempfile
-import platform
 import logging
 import re
 import copy
 import stat
+import platform
 
 from textual import on
 from textual.app import App, ComposeResult
