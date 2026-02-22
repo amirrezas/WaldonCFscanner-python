@@ -6,6 +6,7 @@ import zipfile
 import platform
 import json
 
+
 def ensure_xray_core():
     """Automatically downloads and extracts the latest Xray-core if missing."""
     sys_os = platform.system()
@@ -18,12 +19,10 @@ def ensure_xray_core():
     api_url = "https://api.github.com/repos/XTLS/Xray-core/releases/latest"
 
     try:
-        # 1. Ask GitHub for the latest release data
         req = urllib.request.Request(api_url, headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req) as response:
             data = json.loads(response.read().decode())
 
-        # 2. Find the correct zip file for the OS
         asset_suffix = "windows-64.zip" if sys_os == "Windows" else "linux-64.zip"
         download_url = None
         for asset in data.get('assets', []):
@@ -35,12 +34,10 @@ def ensure_xray_core():
             print("❌ Could not find suitable Xray binary on GitHub.")
             return
 
-        # 3. Download the zip
         print(f"⬇️ Downloading Xray-core (approx 20MB)...")
         zip_path = "xray_temp.zip"
         urllib.request.urlretrieve(download_url, zip_path)
 
-        # 4. Extract ONLY the executable and delete the zip
         print("📦 Extracting executable...")
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             for member in zip_ref.namelist():
@@ -51,7 +48,6 @@ def ensure_xray_core():
                     break
         os.remove(zip_path)
 
-        # 5. Linux/Mac Permissions
         if sys_os != "Windows":
             import stat
             os.chmod(exe_name, os.stat(exe_name).st_mode | stat.S_IEXEC)
@@ -69,7 +65,6 @@ def ensure_dependencies():
     }
 
     missing_packages = []
-
     for module_name, pip_name in required_packages.items():
         try:
             __import__(module_name)
@@ -80,12 +75,9 @@ def ensure_dependencies():
         print(f"📦 First-time setup detected. Installing required packages: {', '.join(missing_packages)}")
         print("⏳ Please wait, this might take a minute...")
 
-
         cmd = [sys.executable, "-m", "pip", "install", "--user"]
-
         if sys.platform.startswith('linux'):
             cmd.append("--break-system-packages")
-
         cmd.extend(missing_packages)
 
         try:
@@ -97,10 +89,8 @@ def ensure_dependencies():
             sys.exit(1)
 
 
-
 ensure_dependencies()
 ensure_xray_core()
-
 
 import asyncio
 import aiohttp
@@ -109,13 +99,11 @@ import time
 import random
 import ipaddress
 import csv
-import json
 import tempfile
 import logging
-import re
 import copy
 import stat
-import platform
+import urllib.parse  # Added for URI parsing
 
 from textual import on
 from textual.app import App, ComposeResult
@@ -123,14 +111,12 @@ from textual.widgets import Header, Footer, RichLog, DataTable, ProgressBar, Lab
 from textual.containers import Horizontal, Vertical, Grid
 from textual.binding import Binding
 
-
 SPEED_TEST_PATH = "/__down?bytes=1000000"
 VERIFY_URL = "http://cp.cloudflare.com/generate_204"
 CSV_FILE = "./clean_ips.csv"
 CONFIG_FILE = "./config.json"
 URI_FILE = "./config.txt"
 OUTPUT_DIR = "./output_configs"
-
 
 logging.basicConfig(
     filename='./scanner_error.log',
@@ -154,6 +140,11 @@ class IPScannerUI(App):
     Screen { background: #000000; }
     #controls-container { height: auto; dock: top; padding: 1 2; background: #111111; border-bottom: solid #333333; }
     #settings-grid { grid-size: 6 1; height: 3; grid-columns: auto 12 auto 12 auto 10; align: left middle; }
+
+    /* New UI block for the clipboard input */
+    #clipboard-row { height: 3; margin-top: 1; align: left middle; }
+    #clipboard_input { width: 1fr; margin-left: 1; background: #222222; color: #00ff00; }
+
     #button-grid { grid-size: 6 1; height: 3; grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr; margin-top: 1; grid-gutter: 1; }
     .lbl { padding-top: 1; color: #ffffff; text-style: bold; }
     .inp { width: 10; background: #222222; color: #00ff00; }
@@ -177,11 +168,16 @@ class IPScannerUI(App):
         with Vertical(id="controls-container"):
             with Grid(id="settings-grid"):
                 yield Label("⚡ Power (1-100):", classes="lbl")
-                yield Input("50", id="power_input", classes="inp")
+                yield Input("10", id="power_input", classes="inp")
                 yield Label("🎯 Target IPs:", classes="lbl")
                 yield Input("10", id="target_input", classes="inp")
                 yield Label("🐞 Debug Mode:", classes="lbl")
                 yield Switch(id="debug_switch", value=True)
+
+            with Horizontal(id="clipboard-row"):
+                yield Label("📋 VLESS URI:", classes="lbl")
+                yield Input(placeholder="Paste vless://... config here to instantly activate Xray",
+                            id="clipboard_input")
 
             with Grid(id="button-grid"):
                 yield Button("▶ Start", id="btn_start", variant="success", classes="btn")
@@ -214,6 +210,88 @@ class IPScannerUI(App):
 
         yield Footer()
 
+
+    def parse_uri_to_json(self, uri: str) -> dict:
+        """Converts a pasted vless:// string into a fully functional Xray JSON template."""
+        try:
+            uri = uri.strip()
+            if not uri.startswith("vless://"): return {}
+            main_part = uri[8:]
+            main_part, name = main_part.split("#", 1) if "#" in main_part else (main_part, "Generated")
+            user_part, server_part = main_part.split("@", 1)
+            server_port, query_str = server_part.split("?", 1)
+            server, port = server_port.split(":", 1)
+            qs = urllib.parse.parse_qs(query_str)
+
+            config = {
+                "inbounds": [{"port": 10809, "protocol": "mixed"}],
+                "outbounds": [{
+                    "protocol": "vless",
+                    "settings": {
+                        "vnext": [{
+                            "address": server,
+                            "port": int(port),
+                            "users": [{"id": user_part, "encryption": qs.get("encryption", ["none"])[0]}]
+                        }]
+                    },
+                    "streamSettings": {
+                        "network": qs.get("type", ["tcp"])[0],
+                        "security": qs.get("security", ["none"])[0]
+                    }
+                }]
+            }
+            if config["outbounds"][0]["streamSettings"]["security"] == "tls":
+                config["outbounds"][0]["streamSettings"]["tlsSettings"] = {
+                    "serverName": qs.get("sni", [""])[0],
+                    "fingerprint": qs.get("fp", ["chrome"])[0],
+                    "alpn": qs.get("alpn", ["http/1.1"])[0].split(",")
+                }
+            if config["outbounds"][0]["streamSettings"]["network"] == "ws":
+                config["outbounds"][0]["streamSettings"]["wsSettings"] = {
+                    "path": qs.get("path", ["/"])[0],
+                    "headers": {"Host": qs.get("host", [""])[0]}
+                }
+            return config
+        except Exception as e:
+            logging.error(f"URI Parse Error: {e}")
+            return {}
+
+    def parse_json_to_uri(self, config: dict) -> str:
+        """Converts a working Xray JSON config back into a shareable vless:// string."""
+        try:
+            out = config["outbounds"][0]
+            if out.get("protocol") != "vless": return ""
+            vnext = out["settings"]["vnext"][0]
+            uuid = vnext["users"][0]["id"]
+            server = vnext["address"]
+            port = vnext["port"]
+            encryption = vnext["users"][0].get("encryption", "none")
+
+            stream = out.get("streamSettings", {})
+            net = stream.get("network", "tcp")
+            sec = stream.get("security", "none")
+
+            params = {"type": net, "encryption": encryption, "security": sec}
+
+            if sec == "tls":
+                tls = stream.get("tlsSettings", {})
+                if "serverName" in tls: params["sni"] = tls["serverName"]
+                if "fingerprint" in tls: params["fp"] = tls["fingerprint"]
+                if "alpn" in tls: params["alpn"] = ",".join(tls["alpn"])
+
+            if net == "ws":
+                ws = stream.get("wsSettings", {})
+                if "path" in ws: params["path"] = ws["path"]
+                if "headers" in ws and "Host" in ws["headers"]: params["host"] = ws["headers"]["Host"]
+
+            q = urllib.parse.urlencode(params, safe=":/,")
+            return f"vless://{uuid}@{server}:{port}?{q}#WaldonCFscanner"
+        except Exception as e:
+            logging.error(f"JSON Parse Error: {e}")
+            return ""
+
+    # ----------------------------------------
+
     def on_mount(self) -> None:
         self.log_view = self.query_one("#log_view", RichLog)
         self.results_table = self.query_one("#results_table", DataTable)
@@ -228,48 +306,81 @@ class IPScannerUI(App):
         self.found_ips = []
         self.hot_subnets = []
         self.target_ips = 10
+
         self.base_config = {}
         self.base_uri = ""
 
         os.makedirs(OUTPUT_DIR, exist_ok=True)
-        logging.info("Scanner initialized. Output directory verified.")
+        logging.info("Scanner initialized.")
+
         self.xray_exe = os.path.abspath("xray.exe" if platform.system() == "Windows" else "xray")
-        self.xray_enabled = os.path.exists(self.xray_exe) and os.path.exists(CONFIG_FILE)
+
+        # Load existing files
+        json_loaded = False
+        uri_loaded = False
+
+        if os.path.exists(CONFIG_FILE):
+            try:
+                with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
+                    self.base_config = json.load(f)
+                    json_loaded = True
+            except Exception as e:
+                logging.error(f"Failed to load config.json: {e}")
+
+        if os.path.exists(URI_FILE):
+            try:
+                with open(URI_FILE, 'r', encoding='utf-8') as f:
+                    self.base_uri = f.read().strip()
+                    if self.base_uri.startswith("vless://"):
+                        uri_loaded = True
+            except Exception as e:
+                logging.error(f"Failed to load config.txt: {e}")
+
+        # Smart Bi-Directional Loading
+        if json_loaded and not uri_loaded:
+            self.base_uri = self.parse_json_to_uri(self.base_config)
+            self.log_view.write("[cyan]Generated URI template from config.json[/cyan]")
+        elif uri_loaded and not json_loaded:
+            self.base_config = self.parse_uri_to_json(self.base_uri)
+            self.log_view.write("[cyan]Generated JSON template from config.txt[/cyan]")
+
+        if self.base_uri:
+            self.query_one("#clipboard_input", Input).value = self.base_uri
+
+        self.xray_enabled = os.path.exists(self.xray_exe) and bool(self.base_config)
 
         if self.xray_enabled and platform.system() != "Windows":
             if not os.access(self.xray_exe, os.X_OK):
                 try:
                     st = os.stat(self.xray_exe)
                     os.chmod(self.xray_exe, st.st_mode | stat.S_IEXEC)
-                    logging.info(f"Automatically granted executable permissions to {self.xray_exe}")
                 except Exception as e:
                     logging.error(f"Failed to make Xray executable: {e}")
                     self.xray_enabled = False
-
-        if self.xray_enabled:
-            try:
-                with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
-                    self.base_config = json.load(f)
-            except Exception as e:
-                logging.error(f"Failed to load config.json: {e}")
-                self.xray_enabled = False
-
-        if os.path.exists(URI_FILE):
-            try:
-                with open(URI_FILE, 'r', encoding='utf-8') as f:
-                    self.base_uri = f.read().strip()
-            except Exception as e:
-                logging.error(f"Failed to load config.txt: {e}")
 
         self._load_networks()
 
         if self.xray_enabled:
             self.log_view.write(f"[bold bright_green]System Ready. 4-Stage Xray Engine Armed.[/bold bright_green]")
         else:
-            self.log_view.write(f"[bold yellow]Xray Core missing! Falling back to 3-Stage Pure Python.[/bold yellow]")
+            self.log_view.write(
+                f"[bold yellow]Xray Core missing or no config provided! Falling back to 3-Stage Pure Python.[/bold yellow]")
 
-        if self.base_uri:
-            self.log_view.write(f"[bold cyan]Clipboard VLESS Template loaded for generation.[/bold cyan]")
+    @on(Input.Changed, "#clipboard_input")
+    def on_clipboard_changed(self, event: Input.Changed):
+        """Live Activation: Detects pasted links and instantly arms the Xray engine."""
+        val = event.value.strip()
+        if val.startswith("vless://"):
+            self.base_uri = val
+            self.base_config = self.parse_uri_to_json(val)
+            if self.base_config and os.path.exists(self.xray_exe):
+                if not self.xray_enabled:
+                    self.xray_enabled = True
+                    self.log_view.write(
+                        "[bold bright_green]✅ Valid VLESS link pasted! Xray Engine Activated.[/bold bright_green]")
+            else:
+                if not os.path.exists(self.xray_exe):
+                    self.log_view.write("[bold yellow]⚠️ Valid VLESS link, but xray binary is missing![/bold yellow]")
 
     @on(Input.Changed, "#target_input")
     def update_target(self, event: Input.Changed):
@@ -321,6 +432,7 @@ class IPScannerUI(App):
             return str(ipaddress.IPv6Address(net_int + random.getrandbits(128 - net.prefixlen)))
 
     def _generate_outputs(self, ip: str):
+        """Generates BOTH JSON and URI formats using the bi-directional engine."""
         try:
             if self.base_config:
                 new_json = copy.deepcopy(self.base_config)
@@ -328,15 +440,17 @@ class IPScannerUI(App):
                 new_json.pop("dns", None)
                 new_json["outbounds"][0]["settings"]["vnext"][0]["address"] = ip
 
+                # Save JSON
                 json_path = os.path.join(OUTPUT_DIR, f"config_{ip.replace(':', '_')}.json")
                 with open(json_path, 'w', encoding='utf-8') as f:
                     json.dump(new_json, f, indent=2)
 
-            if self.base_uri:
-                new_uri = re.sub(r'(vless://[^@]+@)([^:]+)(:\d+)', rf'\g<1>{ip}\g<3>', self.base_uri)
-                uri_path = os.path.join(OUTPUT_DIR, "vless_links.txt")
-                with open(uri_path, 'a', encoding='utf-8') as f:
-                    f.write(new_uri + "\n")
+                # Generate translated URI perfectly without breaking IPv6 format
+                new_uri = self.parse_json_to_uri(new_json)
+                if new_uri:
+                    uri_path = os.path.join(OUTPUT_DIR, "vless_links.txt")
+                    with open(uri_path, 'a', encoding='utf-8') as f:
+                        f.write(new_uri + "\n")
 
         except Exception as e:
             logging.error(f"Failed to generate output for {ip}: {e}")
