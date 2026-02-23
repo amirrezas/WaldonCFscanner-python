@@ -23,6 +23,12 @@ You do not need to install Python at all!
 3. Place it in an empty folder and double-click it. 
    *(Note: The `ipv4.txt` and domain lists are permanently embedded inside the executable! However, if you want to use your own custom `ipv4.txt` or `config.json`, simply place them next to the `.exe` and the program will automatically prioritize yours).*
 
+### 📱 Android (Native APK - Portable Engine)
+No PC or Python required. The Android version features the full 4-stage pipeline in a mobile interface.
+1. Download `WaldonCFscanner_v1.1.apk` from the **[Latest Release](../../releases/latest)**.
+2. Install the APK (allow "Install from Unknown Sources" if prompted).
+3. Paste your VLESS link and hit **Initialize Engine**.
+
 ### 🐧 Linux (Ubuntu / Debian)
 1. **Install Python:** Open your terminal and install Python:
    ```bash
