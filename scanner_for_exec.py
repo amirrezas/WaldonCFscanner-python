@@ -1,9 +1,8 @@
 import sys
-import subprocess
 import os
+import platform
 import urllib.request
 import zipfile
-import platform
 import json
 import asyncio
 
@@ -13,6 +12,7 @@ if platform.system() == 'Windows':
     os.system("chcp 65001 > nul")
     sys.stdout.reconfigure(encoding='utf-8')
 
+    # Anti-Freeze QuickEdit Patch
     try:
         import ctypes
 
@@ -25,12 +25,11 @@ if platform.system() == 'Windows':
     except Exception:
         pass
 
-print("Booting Scanner Engine... Please wait a few seconds...")
+print("Booting Scanner Engine... Unpacking libraries, please wait a few seconds...")
+print("Checking system architecture and dependencies...")
 
-# --- DYNAMIC ENVIRONMENT RESOLUTION ---
-IS_COMPILED = getattr(sys, 'frozen', False)
-
-if IS_COMPILED:
+# --- DYNAMIC FILE RESOLUTION (Internal vs External) ---
+if getattr(sys, 'frozen', False):
     BASE_DIR = os.path.dirname(sys.executable)
     BUNDLE_DIR = sys._MEIPASS
 else:
@@ -39,14 +38,16 @@ else:
 
 
 def get_resource_path(filename):
-    """Prioritize external file in the directory, fallback to bundled internal file."""
+    """Prioritize external file in the exe directory, fallback to bundled internal file."""
     external_path = os.path.join(BASE_DIR, filename)
     if os.path.exists(external_path):
         return external_path
+
     internal_path = os.path.join(BUNDLE_DIR, filename)
     if os.path.exists(internal_path):
         return internal_path
-    return external_path
+
+    return external_path  # Default fallback
 
 
 CSV_FILE = os.path.join(BASE_DIR, "clean_ips.csv")
@@ -55,57 +56,23 @@ URI_FILE = os.path.join(BASE_DIR, "config.txt")
 OUTPUT_DIR = os.path.join(BASE_DIR, "output_configs")
 ERROR_LOG_FILE = os.path.join(BASE_DIR, "scanner_error.log")
 
+# Embedded or External Data Files
 IPV4_FILE = get_resource_path("ipv4.txt")
 IPV6_FILE = get_resource_path("ipv6.txt")
 DOMAINS_FILE = get_resource_path("cloudfalare-domains.txt")
 
 
-# --- DEPENDENCY BOOTSTRAPPER (SKIPS IF COMPILED AS EXE) ---
-def ensure_dependencies():
-    required_packages = {
-        "aiohttp": "aiohttp",
-        "textual": "textual",
-        "pyperclip": "pyperclip"
-    }
-
-    missing_packages = []
-    for module_name, pip_name in required_packages.items():
-        try:
-            __import__(module_name)
-        except ImportError:
-            missing_packages.append(pip_name)
-
-    if missing_packages:
-        print(f"📦 First-time setup detected. Installing required packages: {', '.join(missing_packages)}")
-        cmd = [sys.executable, "-m", "pip", "install", "--user"]
-        if sys.platform.startswith('linux'):
-            cmd.append("--break-system-packages")
-        cmd.extend(missing_packages)
-
-        try:
-            subprocess.check_call(cmd)
-            print("✅ Dependencies installed successfully!\n")
-            os.execv(sys.executable, [sys.executable] + sys.argv)
-        except subprocess.CalledProcessError:
-            print("❌ ERROR: Failed to install dependencies. Please check your internet connection.")
-            sys.exit(1)
-
-
-if not IS_COMPILED:
-    ensure_dependencies()
-
-
-# --- XRAY BINARY RESOLUTION (RUNS IN BOTH MODES) ---
 def ensure_xray_core():
+    """Automatically downloads and extracts the latest Xray-core if missing."""
     sys_os = platform.system()
     exe_name = "xray.exe" if sys_os == "Windows" else "xray"
     xray_path = os.path.join(BASE_DIR, exe_name)
 
     if os.path.exists(xray_path):
-        print("✅ Xray-core detected.")
+        print("Xray-core detected.")
         return
 
-    print(f"🔍 Xray-core missing. Fetching the latest release for {sys_os}...")
+    print(f"Xray-core missing. Fetching the latest release for {sys_os}...")
     api_url = "https://api.github.com/repos/XTLS/Xray-core/releases/latest"
 
     try:
@@ -121,14 +88,14 @@ def ensure_xray_core():
                 break
 
         if not download_url:
-            print("❌ Could not find suitable Xray binary on GitHub.")
+            print("Could not find suitable Xray binary on GitHub.")
             return
 
-        print(f"⬇️ Downloading Xray-core (approx 20MB)...")
+        print(f"Downloading Xray-core (approx 20MB)...")
         zip_path = os.path.join(BASE_DIR, "xray_temp.zip")
         urllib.request.urlretrieve(download_url, zip_path)
 
-        print("📦 Extracting executable...")
+        print("Extracting executable...")
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             for member in zip_ref.namelist():
                 if member == exe_name or member.endswith(f"/{exe_name}"):
@@ -142,15 +109,14 @@ def ensure_xray_core():
             import stat
             os.chmod(xray_path, os.stat(xray_path).st_mode | stat.S_IEXEC)
 
-        print("✅ Xray-core installed successfully!\n")
+        print("Xray-core installed successfully!\n")
     except Exception as e:
-        print(f"❌ Failed to auto-download Xray: {e}")
+        print(f"Failed to auto-download Xray: {e}")
+        print("Continuing with Pure-Python fallback mode.")
 
 
 ensure_xray_core()
 
-# --- EXTERNAL IMPORTS ---
-# These are safe to import now because ensure_dependencies() has guaranteed their existence.
 import aiohttp
 import ssl
 import time
