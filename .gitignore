@@ -3,8 +3,8 @@
 __pycache__/
 
 # Output and Log files
-build/
-dist/
+build/*
+dist/*
 *.spec
 output_configs/
 *.log
