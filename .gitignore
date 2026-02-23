@@ -17,6 +17,7 @@ config.json
 config.txt
 vless_links.txt
 scanner_for_exec.py
+xray_temp.zip
 
 # Virtual Environments
 venv/
