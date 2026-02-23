@@ -1,0 +1,30 @@
+# PyCharm specific
+.idea/
+__pycache__/
+
+# Output and Log files
+output_configs/
+*.log
+*.csv
+
+# Binaries and Personal Configs (DO NOT UPLOAD THESE)
+xray
+xray.exe
+config.json
+config.txt
+vless_links.txt
+scanner_for_exec.py
+
+# Virtual Environments
+venv/
+env/
+
+# Android Studio Exceptions
+
+Android-App/build/
+Android-App/app/build/
+Android-App/.gradle/
+Android-App/.idea/
+Android-App/local.properties
+*.jks
+*.keystore
