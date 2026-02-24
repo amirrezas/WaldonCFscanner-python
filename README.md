@@ -1,4 +1,4 @@
-# ⚡ WaldonCFscanner | Advanced Cloudflare Clean IP Scanner & Xray Verifier
+# ⚡ WaldonCFscanner | Cloudflare Clean IP & Xray Verifier
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)]()
