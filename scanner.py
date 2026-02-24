@@ -84,11 +84,22 @@ if not IS_COMPILED: ensure_dependencies()
 
 def ensure_xray_core():
     sys_os = platform.system()
+    sys_machine = platform.machine().lower()
+    is_termux = "com.termux" in os.environ.get("PREFIX", "")
+
     exe_name = "xray.exe" if sys_os == "Windows" else "xray"
     xray_path = os.path.join(BASE_DIR, exe_name)
 
-    if os.path.exists(xray_path): return
-    print(f"🔍 Xray-core missing. Fetching latest for {sys_os}...")
+    if os.path.exists(xray_path):
+        try:
+            # Self-Healing: Test if the existing binary is broken (e_type: 2)
+            subprocess.run([xray_path, "version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            return
+        except Exception:
+            print("⚠️ Existing Xray binary is broken or incompatible with this architecture. Redownloading...")
+            os.remove(xray_path)
+
+    print(f"🔍 Xray-core missing. Fetching latest for {sys_os} ({sys_machine})...")
     api_url = "https://api.github.com/repos/XTLS/Xray-core/releases/latest"
 
     try:
@@ -96,11 +107,28 @@ def ensure_xray_core():
         with urllib.request.urlopen(req) as response:
             data = json.loads(response.read().decode())
 
-        asset_suffix = "windows-64.zip" if sys_os == "Windows" else "linux-64.zip"
+        # SMART ARCHITECTURE DETECTION
+        if sys_os == "Windows":
+            asset_suffix = "windows-64.zip"
+        elif is_termux:
+            if "aarch64" in sys_machine or "armv8" in sys_machine or "arm64" in sys_machine:
+                asset_suffix = "android-arm64-v8a.zip"
+            else:
+                asset_suffix = "android-amd64.zip"
+        else:
+            if "aarch64" in sys_machine or "armv8" in sys_machine or "arm64" in sys_machine:
+                asset_suffix = "linux-arm64-v8a.zip"
+            else:
+                asset_suffix = "linux-64.zip"
+
         download_url = next(
             (a['browser_download_url'] for a in data.get('assets', []) if a['name'].endswith(asset_suffix)), None)
 
-        if not download_url: return
+        if not download_url:
+            print(f"❌ Could not find suitable Xray binary ({asset_suffix}) on GitHub.")
+            return
+
+        print(f"⬇️ Downloading {asset_suffix} (approx 20MB)...")
         zip_path = os.path.join(BASE_DIR, "xray_temp.zip")
         urllib.request.urlretrieve(download_url, zip_path)
 
@@ -115,6 +143,8 @@ def ensure_xray_core():
         if sys_os != "Windows":
             import stat
             os.chmod(xray_path, os.stat(xray_path).st_mode | stat.S_IEXEC)
+
+        print("✅ Xray-core installed successfully!\n")
     except Exception as e:
         print(f"❌ Failed to auto-download Xray: {e}")
 
@@ -891,9 +921,6 @@ class IPScannerUI(App):
                     start_time = time.monotonic()
 
                     async with aiohttp.ClientSession() as session:
-                        # CRITICAL FIX: Changed http:// to https://
-                        # aiohttp translates an https:// proxy request into a raw TCP CONNECT tunnel to port 443.
-                        # Serverless BPB workers often forcefully drop Port 80 HTTP proxy requests, but accept 443.
                         async with session.get("https://speed.cloudflare.com/__down?bytes=500000",
                                                proxy=f"http://127.0.0.1:{local_port}", timeout=10) as resp:
                             ttfb_ms = (time.monotonic() - start_time) * 1000
