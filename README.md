@@ -1,4 +1,4 @@
-# ⚡ WaldonCFscanner-python | Advanced Xray-Core VLESS Verifier
+# ⚡ WaldonCFscanner | Advanced Cloudflare Clean IP Scanner & Xray Verifier
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)]()
@@ -6,7 +6,7 @@
 
 **[🇮🇷 برای مطالعه نسخه فارسی اینجا کلیک کنید (Persian Version)](README_fa.md)**
 
-An incredibly fast, highly-optimized Cloudflare IP Scanner engineered specifically to bypass severe internet censorship infrastructures (such as the Great Firewall) using modern proxy protocols.
+An incredibly fast, highly-optimized Cloudflare Clean IP Scanner engineered specifically to bypass severe internet censorship infrastructures (such as the Great Firewall) using modern proxy protocols.
 
 Created by [@amirrezas](https://github.com/amirrezas). Inspired by the works of MortezaBashsiz and the global anti-censorship community.
 
@@ -14,7 +14,7 @@ Created by [@amirrezas](https://github.com/amirrezas). Inspired by the works of 
 
 ## 🚀 Quick Start: Installation & Usage (Zero-Setup Execution)
 
-We believe anti-censorship tools should be accessible to everyone. The engine features an autonomous bootstrap sequence, meaning you do not need to install packages, deal with Go binaries, or understand command lines to run this.
+The engine features an autonomous bootstrap sequence, meaning you do not need to install packages, deal with Go binaries, or understand command lines to run this.
 
 ### 🪟 Windows (Easiest Method - Standalone `.exe`)
 You do not need to install Python at all!
@@ -27,7 +27,7 @@ You do not need to install Python at all!
 No PC or Python required. The Android version features the full 4-stage pipeline in a mobile interface.
 1. Download `WaldonCFscanner_v1.1.apk` from the **[Latest Release](../../releases/latest)**.
 2. Install the APK (allow "Install from Unknown Sources" if prompted).
-3. Paste your VLESS link and hit **Initialize Engine**.
+3. Paste your VLESS or Trojan link and hit **Initialize Engine**.
 
 ### 🐧 Linux (Ubuntu / Debian)
 1. **Install Python:** Open your terminal and install Python:
@@ -36,8 +36,8 @@ No PC or Python required. The Android version features the full 4-stage pipeline
    ```
 2. **Clone the Project:**
    ```bash
-   git clone [https://github.com/amirrezas/WaldonCFscanner-python.git](https://github.com/amirrezas/WaldonCFscanner-python.git)
-   cd WaldonCFscanner-python
+   git clone [https://github.com/amirrezas/WaldonCFscanner.git](https://github.com/amirrezas/WaldonCFscanner.git)
+   cd WaldonCFscanner
    ```
 3. **Run the Scanner:** (The script will automatically install missing `pip` dependencies and download the Linux Xray-core binary for you!)
    ```bash
@@ -48,8 +48,8 @@ No PC or Python required. The Android version features the full 4-stage pipeline
 1. **Install Python:** Run `brew install python` (requires Homebrew).
 2. **Clone and Run:**
    ```bash
-   git clone [https://github.com/amirrezas/WaldonCFscanner-python.git](https://github.com/amirrezas/WaldonCFscanner-python.git)
-   cd WaldonCFscanner-python
+   git clone [https://github.com/amirrezas/WaldonCFscanner.git](https://github.com/amirrezas/WaldonCFscanner.git)
+   cd WaldonCFscanner
    python3 scanner.py
    ```
 
@@ -58,18 +58,16 @@ No PC or Python required. The Android version features the full 4-stage pipeline
 ## ⚙️ How to use the Auto-Config Generator
 You can personalize the scanner to automatically generate ready-to-use VPN profiles based on your private server parameters.
 
-* **Via JSON:** Place your server's base VLESS config inside a file named `config.json` in the root folder before running.
-* **Via URI (Clipboard):** While the program is running, click the **"📋 Paste"** button in the Terminal Dashboard to instantly pull your `vless://...` link directly from your clipboard!
+* **Via JSON:** Place your server's base config inside a file named `config.json` in the root folder before running.
+* **Via URI (Clipboard):** While the program is running, click the **"📋 Paste"** button in the Terminal Dashboard to instantly pull your `vless://...` or `trojan://...` link directly from your clipboard!
 
-When the scanner discovers a top-tier IP, it will create an `output_configs/` directory containing customized `.json` client files and a `vless_links.txt` file packed with shareable, high-speed URIs.
+When the scanner discovers a top-tier clean IP, it will create an `output_configs/` directory containing customized `.json` client files and a text file packed with shareable, high-speed URIs.
 
 ---
 
 ## 🌍 The Ethical Standpoint: Internet as a Human Right
 
-In 2016, the United Nations Human Rights Council passed a landmark resolution unequivocally condemning internet shutdowns, affirming that *"the same rights that people have offline must also be protected online."* Access to information, freedom of expression, and digital privacy are fundamental human rights. 
-
-This tool exists because no government or entity should have the power to artificially isolate its citizens from the global community. **WaldonCFscanner** empowers individuals to bypass oppressive firewalls, resist Deep Packet Inspection (DPI), and reclaim their inalienable right to the open web.
+Access to information, freedom of expression, and digital privacy are fundamental human rights. This tool exists because no entity should have the power to artificially isolate its citizens from the global community. **WaldonCFscanner** empowers individuals to bypass oppressive firewalls, resist Deep Packet Inspection (DPI), and reclaim their right to the open web.
 
 ---
 
@@ -119,7 +117,7 @@ To find 10 flawless, high-speed IPs out of billions of potential IPv4 and IPv6 c
 * **Objective:** Filter out IPs that are heavily throttled or suffer from severe packet loss.
 * **Mechanism:** A passing IP is subjected to a raw HTTP download of a 1MB payload from `speed.cloudflare.com/__down`. The engine calculates the precise Time-Delta. IPs that fail to sustain a high Mbps threshold are discarded immediately.
 
-### Stage 4: Headless Xray-Core Verification (The VIP Room)
+### Stage 4: Headless Xray-Core Verification
 * **Objective:** The ultimate proof of concept. Verify that the IP can successfully route VLESS websocket traffic.
 * **Mechanism:** The engine dynamically strips unnecessary parameters (like `routing` or `dns` blocks) to prevent `geosite.dat` crash loops. It binds an isolated, headless instance of the official `Xray-core` binary to a randomized local port (between 20000 and 50000) and routes a live proxy connection to `cp.cloudflare.com` to calculate the cryptographically-verified Time-to-First-Byte (TTFB).
 
@@ -141,7 +139,7 @@ If you encounter issues, please utilize the built-in diagnostic tools before ope
 
 1. **The Professional Logger:** Click the **"Save Log"** button in the TUI. The Python `logging` module runs silently in the background, capturing standard outputs, socket timeouts, JSON parsing errors, and raw Subprocess Tracebacks.
 2. **Review `scanner_error.log`:** Check this file in your root directory. It will explicitly tell you if `xray.exe` is missing, if a port failed to bind, or if an issue occurred during rendering.
-3. **Open an Issue:** Navigate to the [GitHub Issues tab](https://github.com/amirrezas/WaldonCFscanner-python/issues) and attach your `scanner_error.log` file. Community contributions, pull requests, and bug reports are highly encouraged!
+3. **Open an Issue:** Navigate to the [GitHub Issues tab](https://github.com/amirrezas/WaldonCFscanner/issues) and attach your `scanner_error.log` file. Community contributions, pull requests, and bug reports are highly encouraged!
 
 ---
 

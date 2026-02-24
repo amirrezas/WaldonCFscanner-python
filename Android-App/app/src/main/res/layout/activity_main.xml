@@ -45,7 +45,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="50dp"
-                android:hint="Paste vless://... here"
+                android:hint="Paste vless:// or trojan:// here"
                 android:textColorHint="#555555"
                 android:textColor="#00FFFF"
                 android:backgroundTint="#333333"
@@ -134,6 +134,15 @@
             android:backgroundTint="#4CAF50"
             app:cornerRadius="12dp" />
 
+        <Button
+            android:id="@+id/btnGithub"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="View open-source project on GitHub"
+            android:textAllCaps="false"
+            android:textColor="#888888" />
     </LinearLayout>
 
     <LinearLayout
@@ -144,49 +153,33 @@
         android:padding="12dp"
         android:visibility="gone">
 
-        <TextView
-            android:id="@+id/tvActiveUri"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="vless://..."
-            android:textColor="#00FFFF"
-            android:textSize="11sp"
-            android:singleLine="true"
-            android:ellipsize="middle"
-            android:padding="8dp"
-            android:background="#151515"
-            android:layout_marginBottom="8dp"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="16dp">
 
-            <TextView android:text="Target:" android:textColor="#FFFFFF" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-            <EditText
-                android:id="@+id/inputTargetLive"
-                android:layout_width="60dp"
+            <Button
+                android:id="@+id/btnBackToSetup"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="10"
-                android:textColor="#00E676"
-                android:inputType="number"
-                android:enabled="false"
-                android:gravity="center"/>
+                android:text="⬅️ BACK"
+                android:textColor="#AAAAAA" />
 
-            <Space android:layout_width="16dp" android:layout_height="wrap_content"/>
-
-            <TextView android:text="Power:" android:textColor="#FFFFFF" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-            <EditText
-                android:id="@+id/inputPowerLive"
-                android:layout_width="60dp"
+            <TextView
+                android:id="@+id/tvActiveUri"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="10"
-                android:textColor="#00E676"
-                android:inputType="number"
-                android:enabled="false"
-                android:gravity="center"/>
+                android:text="vless://..."
+                android:textColor="#00FFFF"
+                android:textSize="11sp"
+                android:singleLine="true"
+                android:ellipsize="middle"
+                android:padding="8dp"
+                android:background="#151515" />
         </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
@@ -194,146 +187,72 @@
             android:layout_height="wrap_content"
             app:cardBackgroundColor="#151515"
             app:cardCornerRadius="12dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:padding="16dp">
 
-                <TextView android:text="1. TCP Probes" android:textColor="#AAAAAA" android:textSize="11sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:text="1. TCP Probes" android:textColor="#AAAAAA" android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="2dp"/>
                 <com.google.android.material.progressindicator.LinearProgressIndicator
-                    android:id="@+id/pbTcp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:trackThickness="10dp"
-                    app:trackCornerRadius="5dp"
-                    app:indicatorColor="#2196F3"
-                    android:layout_marginBottom="6dp"/>
+                    android:id="@+id/pbTcp" android:layout_width="match_parent" android:layout_height="wrap_content" app:trackThickness="6dp" app:indicatorColor="#2196F3" android:layout_marginBottom="8dp"/>
 
-                <TextView android:text="2. TLS Handshakes" android:textColor="#AAAAAA" android:textSize="11sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:text="2. TLS Handshakes" android:textColor="#AAAAAA" android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="2dp"/>
                 <com.google.android.material.progressindicator.LinearProgressIndicator
-                    android:id="@+id/pbTls"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:trackThickness="10dp"
-                    app:trackCornerRadius="5dp"
-                    app:indicatorColor="#9C27B0"
-                    android:layout_marginBottom="6dp"/>
+                    android:id="@+id/pbTls" android:layout_width="match_parent" android:layout_height="wrap_content" app:trackThickness="6dp" app:indicatorColor="#9C27B0" android:layout_marginBottom="8dp"/>
 
-                <TextView android:text="3. Payload Speed Tests" android:textColor="#AAAAAA" android:textSize="11sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:text="3. Payload Speed Tests" android:textColor="#AAAAAA" android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="2dp"/>
                 <com.google.android.material.progressindicator.LinearProgressIndicator
-                    android:id="@+id/pbSpeed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:trackThickness="10dp"
-                    app:trackCornerRadius="5dp"
-                    app:indicatorColor="#00BCD4"
-                    android:layout_marginBottom="6dp"/>
+                    android:id="@+id/pbSpeed" android:layout_width="match_parent" android:layout_height="wrap_content" app:trackThickness="6dp" app:indicatorColor="#00BCD4" android:layout_marginBottom="8dp"/>
 
-                <TextView android:text="4. Xray Verification" android:textColor="#AAAAAA" android:textSize="11sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:text="4. Xray Verification (Payload Test)" android:textColor="#AAAAAA" android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="2dp"/>
                 <com.google.android.material.progressindicator.LinearProgressIndicator
-                    android:id="@+id/pbXray"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:trackThickness="10dp"
-                    app:trackCornerRadius="5dp"
-                    app:indicatorColor="#FFEB3B"/>
+                    android:id="@+id/pbXray" android:layout_width="match_parent" android:layout_height="wrap_content" app:trackThickness="6dp" app:indicatorColor="#FFEB3B"/>
 
-                <TextView android:id="@+id/tvTargetProgress" android:text="🎯 Target: 0 / 10" android:textColor="#00E676" android:textStyle="bold" android:gravity="center" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"/>
+                <TextView android:id="@+id/tvTargetProgress" android:text="🎯 Target: 0 / 10" android:textColor="#00E676" android:textStyle="bold" android:gravity="center" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:textSize="16sp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="VERIFIED CONFIGS:"
-            android:textColor="#00E676"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="#111111"
-            android:padding="8dp"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:id="@+id/tvConfigs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
-                android:textSize="11sp"
-                android:textIsSelectable="true" />
-        </ScrollView>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp">
 
             <Button
                 android:id="@+id/btnPauseResume"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="55dp"
                 android:layout_weight="1"
                 android:text="⏸ PAUSE"
                 android:backgroundTint="#FF9800"
                 app:cornerRadius="8dp" />
 
-            <Space android:layout_width="8dp" android:layout_height="wrap_content"/>
+            <Space android:layout_width="12dp" android:layout_height="wrap_content"/>
 
             <Button
                 android:id="@+id/btnStopLive"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="55dp"
                 android:layout_weight="1"
-                android:text="⏹ STOP"
+                android:text="⏹ STOP &amp; RESULTS"
                 android:backgroundTint="#F44336"
                 app:cornerRadius="8dp" />
         </LinearLayout>
 
-        <LinearLayout
+        <Button
+            android:id="@+id/btnCopyLogs"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:text="📄 Copy Terminal Logs"
+            android:textColor="#AAAAAA"
+            android:layout_marginBottom="8dp"
+            app:strokeColor="#555555"/>
 
-            <Button
-                android:id="@+id/btnCopyConfigs"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="💾 Copy Configs"
-                android:textColor="#00E676"
-                app:strokeColor="#00E676"/>
-
-            <Space android:layout_width="8dp" android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/btnCopyLogs"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="📄 Copy Logs"
-                android:textColor="#AAAAAA"
-                app:strokeColor="#555555"/>
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TERMINAL LOGS:"
-            android:textColor="#888888"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
+        <TextView android:text="LIVE TERMINAL LOGS:" android:textColor="#888888" android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold" />
         <ScrollView
             android:id="@+id/logScrollView"
             android:layout_width="match_parent"
@@ -341,15 +260,114 @@
             android:layout_weight="1"
             android:background="#050505"
             android:padding="8dp">
+            <TextView android:id="@+id/tvLogs" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#CCCCCC" android:textSize="10sp" android:fontFamily="monospace" android:text="Logs initialized...\n" />
+        </ScrollView>
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvLogs"
+    <LinearLayout
+        android:id="@+id/pageResults"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="✅ Scan Complete"
+            android:textColor="#00E676"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="#1B3320"
+            app:cardCornerRadius="12dp"
+            app:strokeColor="#00E676"
+            app:strokeWidth="1dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#CCCCCC"
-                android:textSize="10sp"
-                android:fontFamily="monospace"
-                android:text="Logs initialized...\n" />
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView android:text="🏆 RECOMMENDED TOP IP" android:textColor="#00E676" android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold" android:layout_marginBottom="8dp" />
+                <TextView android:id="@+id/tvBestIpResult" android:text="Loading..." android:textColor="#FFFFFF" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="16sp" android:textStyle="bold" android:layout_marginBottom="12dp" />
+
+                <Button
+                    android:id="@+id/btnConnectBest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🚀 Connect Best Config"
+                    android:backgroundTint="#00E676"
+                    android:textColor="#000000"
+                    app:cornerRadius="8dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView android:text="DETAILED STATISTICS" android:textColor="#AAAAAA" android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold" android:layout_marginBottom="8dp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#151515"
+            android:padding="4dp"
+            android:layout_marginBottom="16dp">
+
+            <TableLayout
+                android:id="@+id/tableResults"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </TableLayout>
         </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <Button
+                android:id="@+id/btnExportIps"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:text="📄 Export IPs"
+                android:backgroundTint="#FF9800"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:cornerRadius="8dp" />
+
+            <Space android:layout_width="12dp" android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/btnExportAll"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:text="📥 Export V2Ray"
+                android:backgroundTint="#2196F3"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:cornerRadius="8dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnBackToHome"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🏠 Back to Scanner Setup"
+            android:textColor="#888888" />
+
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
