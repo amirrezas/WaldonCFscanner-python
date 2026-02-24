@@ -63,7 +63,7 @@
    wget "$REPO/scanner.py"
    wget "$REPO/ipv4.txt"
    wget "$REPO/ipv6.txt"
-   wget "$REPO/cloudflare_domains.txt"
+   wget "$REPO/cloudflare-domains.txt"
    ```
 </div>
 <div dir="rtl" align="right">
@@ -104,7 +104,7 @@
    wget "$REPO/scanner.py"
    wget "$REPO/ipv4.txt"
    wget "$REPO/ipv6.txt"
-   wget "$REPO/cloudflare_domains.txt"
+   wget "$REPO/cloudflare-domains.txt"
    ```
 </div>
 <div dir="rtl" align="right">
@@ -138,7 +138,7 @@
    wget "$REPO/scanner.py"
    wget "$REPO/ipv4.txt"
    wget "$REPO/ipv6.txt"
-   wget "$REPO/cloudflare_domains.txt"
+   wget "$REPO/cloudflare-domains.txt"
    python scanner.py
    ```
 </div>

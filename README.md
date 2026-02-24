@@ -45,7 +45,7 @@ If you prefer running the raw Python script on Android:
    wget "$REPO/scanner.py"
    wget "$REPO/ipv4.txt"
    wget "$REPO/ipv6.txt"
-   wget "$REPO/cloudflare_domains.txt"
+   wget "$REPO/cloudflare-domains.txt"
    ```
 3. **Run the Scanner:**
    ```bash
@@ -67,7 +67,7 @@ If you prefer running the raw Python script on Android:
    wget "$REPO/scanner.py"
    wget "$REPO/ipv4.txt"
    wget "$REPO/ipv6.txt"
-   wget "$REPO/cloudflare_domains.txt"
+   wget "$REPO/cloudflare-domains.txt"
    ```
 3. **Run the Scanner:**
    ```bash
@@ -86,7 +86,7 @@ If you prefer running the raw Python script on Android:
    wget "$REPO/scanner.py"
    wget "$REPO/ipv4.txt"
    wget "$REPO/ipv6.txt"
-   wget "$REPO/cloudflare_domains.txt"
+   wget "$REPO/cloudflare-domains.txt"
    python scanner.py
    ```
 
