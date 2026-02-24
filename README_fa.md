@@ -37,45 +37,92 @@
 ۳. لینک VLESS خود را پیست کرده و دکمه **Initialize Engine** را بزنید.
 
 
-### 🐧 لینوکس (`Ubuntu` / `Debian`)
+### 📟 ترموکس / Termux (ترمینال اندروید)
+اگر ترجیح می‌دهید اسکریپت خام پایتون را روی اندروید اجرا کنید:
 
-۱. **نصب پایتون:** ترمینال خود را باز کرده و پایتون را نصب کنید:
+۱. **نصب پیش‌نیازها:**
 </div>
 <div dir="ltr" align="left">
 
    ```bash
-   sudo apt update && sudo apt install python3 python3-pip wget
+   apt update && apt install python wget -y
    ```
 </div>
 <div dir="rtl" align="right">
 
-۲. **دانلود موتور اسکنر:** (این دستور فقط اسکریپت سبک پایتون را دانلود می‌کند و سورس‌کد اندروید را نادیده می‌گیرد)
+۲. **دانلود موتور اسکنر:**
 </div>
 <div dir="ltr" align="left">
 
    ```bash
    mkdir WaldonCFscanner && cd WaldonCFscanner
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/scanner.py](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/scanner.py)
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv4.txt](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv4.txt)
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv6.txt](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv6.txt)
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/cloudflare_domains.txt](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/cloudflare_domains.txt)
+   H="https://"
+   D="raw.githubusercontent"
+   E=".com/amirrezas/WaldonCFscanner/master"
+   REPO="${H}${D}${E}"
+   wget "$REPO/scanner.py"
+   wget "$REPO/ipv4.txt"
+   wget "$REPO/ipv6.txt"
+   wget "$REPO/cloudflare_domains.txt"
    ```
 </div>
 <div dir="rtl" align="right">
 
-۳. **اجرای اسکنر:** (برنامه پیش‌نیازهای `pip` و هسته لینوکسی `Xray` را خودش دانلود و نصب می‌کند!)
+۳. **اجرای اسکنر:**
 </div>
 <div dir="ltr" align="left">
 
    ```bash
-   python3 scanner.py
+   python scanner.py
    ```
 </div>
 <div dir="rtl" align="right">
 
+
+### 🐧 لینوکس (`Ubuntu` / `Debian`)
+
+۱. **نصب پایتون:**
+</div>
+<div dir="ltr" align="left">
+
+   ```bash
+   sudo apt update && sudo apt install python python-pip wget -y
+   ```
+</div>
+<div dir="rtl" align="right">
+
+۲. **دانلود موتور اسکنر:**
+</div>
+<div dir="ltr" align="left">
+
+   ```bash
+   mkdir WaldonCFscanner && cd WaldonCFscanner
+   H="https://"
+   D="raw.githubusercontent"
+   E=".com/amirrezas/WaldonCFscanner/master"
+   REPO="${H}${D}${E}"
+   wget "$REPO/scanner.py"
+   wget "$REPO/ipv4.txt"
+   wget "$REPO/ipv6.txt"
+   wget "$REPO/cloudflare_domains.txt"
+   ```
+</div>
+<div dir="rtl" align="right">
+
+۳. **اجرای اسکنر:**
+</div>
+<div dir="ltr" align="left">
+
+   ```bash
+   python scanner.py
+   ```
+</div>
+<div dir="rtl" align="right">
+
+
 ### 🍏 مک‌اواس (`macOS`)
 
-۱. **نصب پایتون:** ترمینال خود را باز کرده و دستور `brew install python wget` را اجرا کنید (نیاز به `Homebrew` دارد).
+۱. **نصب پایتون:** دستور `brew install python wget` را اجرا کنید.
 
 
 ۲. **دانلود و اجرا:**
@@ -84,11 +131,15 @@
 
    ```bash
    mkdir WaldonCFscanner && cd WaldonCFscanner
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/scanner.py](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/scanner.py)
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv4.txt](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv4.txt)
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv6.txt](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv6.txt)
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/cloudflare_domains.txt](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/cloudflare_domains.txt)
-   python3 scanner.py
+   H="https://"
+   D="raw.githubusercontent"
+   E=".com/amirrezas/WaldonCFscanner/master"
+   REPO="${H}${D}${E}"
+   wget "$REPO/scanner.py"
+   wget "$REPO/ipv4.txt"
+   wget "$REPO/ipv6.txt"
+   wget "$REPO/cloudflare_domains.txt"
+   python scanner.py
    ```
 </div>
 <div dir="rtl" align="right">

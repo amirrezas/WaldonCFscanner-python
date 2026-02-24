@@ -29,22 +29,49 @@ No PC or Python required. The Android version features the full 4-stage pipeline
 2. Install the APK (allow "Install from Unknown Sources" if prompted).
 3. Paste your VLESS or Trojan link and hit **Initialize Engine**.
 
-### 🐧 Linux (Ubuntu / Debian)
-1. **Install Python:** Open your terminal and install Python:
+### 📟 Termux (Android Terminal)
+If you prefer running the raw Python script on Android:
+1. **Install Dependencies:**
    ```bash
-   sudo apt update && sudo apt install python3 python3-pip wget
+   apt update && apt install python wget -y
    ```
-2. **Download the Engine:** (This fetches only the lightweight Python scanner, ignoring the Android source code)
+2. **Download the Engine:**
    ```bash
    mkdir WaldonCFscanner && cd WaldonCFscanner
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/scanner.py](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/scanner.py)
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv4.txt](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv4.txt)
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv6.txt](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv6.txt)
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/cloudflare_domains.txt](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/cloudflare_domains.txt)
+   H="https://"
+   D="raw.githubusercontent"
+   E=".com/amirrezas/WaldonCFscanner/master"
+   REPO="${H}${D}${E}"
+   wget "$REPO/scanner.py"
+   wget "$REPO/ipv4.txt"
+   wget "$REPO/ipv6.txt"
+   wget "$REPO/cloudflare_domains.txt"
    ```
-3. **Run the Scanner:** (The script will automatically install missing `pip` dependencies and download the Linux Xray-core binary for you!)
+3. **Run the Scanner:**
    ```bash
-   python3 scanner.py
+   python scanner.py
+   ```
+
+### 🐧 Linux (Ubuntu / Debian)
+1. **Install Python:**
+   ```bash
+   apt update && apt install python python-pip wget -y
+   ```
+2. **Download the Engine:**
+   ```bash
+   mkdir WaldonCFscanner && cd WaldonCFscanner
+   H="https://"
+   D="raw.githubusercontent"
+   E=".com/amirrezas/WaldonCFscanner/master"
+   REPO="${H}${D}${E}"
+   wget "$REPO/scanner.py"
+   wget "$REPO/ipv4.txt"
+   wget "$REPO/ipv6.txt"
+   wget "$REPO/cloudflare_domains.txt"
+   ```
+3. **Run the Scanner:**
+   ```bash
+   python scanner.py
    ```
 
 ### 🍏 macOS
@@ -52,11 +79,15 @@ No PC or Python required. The Android version features the full 4-stage pipeline
 2. **Download and Run:**
    ```bash
    mkdir WaldonCFscanner && cd WaldonCFscanner
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/scanner.py](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/scanner.py)
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv4.txt](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv4.txt)
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv6.txt](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/ipv6.txt)
-   wget [https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/cloudflare_domains.txt](https://raw.githubusercontent.com/amirrezas/WaldonCFscanner/main/cloudflare_domains.txt)
-   python3 scanner.py
+   H="https://"
+   D="raw.githubusercontent"
+   E=".com/amirrezas/WaldonCFscanner/master"
+   REPO="${H}${D}${E}"
+   wget "$REPO/scanner.py"
+   wget "$REPO/ipv4.txt"
+   wget "$REPO/ipv6.txt"
+   wget "$REPO/cloudflare_domains.txt"
+   python scanner.py
    ```
 
 ---
