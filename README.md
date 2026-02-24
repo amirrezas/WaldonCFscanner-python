@@ -4,7 +4,7 @@
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**[🇮🇷 برای مطالعه نسخه فارسی اینجا کلیک کنید (Persian Version)](README_fa.md)**
+**[برای مطالعه نسخه فارسی اینجا کلیک کنید (Persian Version)](README_fa.md)**
 
 An incredibly fast, highly-optimized Cloudflare Clean IP Scanner engineered specifically to bypass severe internet censorship infrastructures (such as the Great Firewall) using modern proxy protocols.
 
