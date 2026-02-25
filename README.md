@@ -1,16 +1,23 @@
+<div align="center">
+
 # ⚡ WaldonCFscanner | Cloudflare Clean IP & Xray Verifier
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)]()
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://github.com/amirrezas/WaldonCFscanner/actions/workflows/release.yml/badge.svg)](https://github.com/amirrezas/WaldonCFscanner/actions)
+[![GitHub Release](https://img.shields.io/github/v/release/amirrezas/WaldonCFscanner?color=success)](https://github.com/amirrezas/WaldonCFscanner/releases)
+[![Downloads](https://img.shields.io/github/downloads/amirrezas/WaldonCFscanner/total.svg)](https://github.com/amirrezas/WaldonCFscanner/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+*An incredibly fast, highly-optimized Cloudflare Clean IP Scanner engineered specifically to bypass severe internet censorship infrastructures (such as the Great Firewall) using modern proxy protocols.*
 
 **[برای مطالعه نسخه فارسی اینجا کلیک کنید (Persian Version)](README_fa.md)**
 
-An incredibly fast, highly-optimized Cloudflare Clean IP Scanner engineered specifically to bypass severe internet censorship infrastructures (such as the Great Firewall) using modern proxy protocols.
+</div>
 
 Created by [@amirrezas](https://github.com/amirrezas). Inspired by the works of MortezaBashsiz and the global anti-censorship community.
 
 ---
+
+
 
 ## 🚀 Quick Start: Installation & Usage (Zero-Setup Execution)
 
@@ -132,14 +139,22 @@ Traditional Cloudflare scanners rely on simple ICMP pings or basic TCP handshake
 
 To find 10 flawless, high-speed IPs out of billions of potential IPv4 and IPv6 combinations without exhausting local system memory or crashing the host router, the scanner acts as an aggressive, asynchronous, hardware-aware assembly line. 
 
-```text
-+---------------+    +---------------+    +---------------+    +---------------+    +---------------+
-|               |    |   STAGE 1:    |    |   STAGE 2:    |    |   STAGE 3:    |    |   STAGE 4:    |
-|   Subnet IP   |    |   TCP Probe   |    |   TLS & SNI   |    |   1MB Speed   |    |  Xray VLESS   |
-|   Generator   | -> |  (Port 443)   | -> |  (Handshake)  | -> |  (Throughput) | -> | (Verification)|
-|               |    |               |    |               |    |               |    |               |
-+---------------+    +---------------+    +---------------+    +---------------+    +---------------+
-  (Millions)           (Thousands/sec)      (Hundreds/sec)        (Tens/sec)           (The Winners)
+```mermaid
+graph TD
+    classDef gen fill:#333,stroke:#555,stroke-width:2px,color:#fff;
+    classDef pass fill:#156064,stroke:#3b82f6,stroke-width:2px,color:#fff;
+    classDef drop fill:#501a1a,stroke:#ef4444,stroke-width:2px,color:#fff;
+    classDef final fill:#166534,stroke:#10b981,stroke-width:3px,color:#fff;
+
+    A[Subnet IP Generator<br>Millions of IPs]:::gen -->|Phase 1| B(TCP Probe<br>Port 443):::pass
+    B -->|Timeout/Fail| X1[Drop]:::drop
+    B -->|Port 443 Open| C(TLS & SNI Injection<br>Handshake):::pass
+    C -->|SNI Mismatch| X2[Drop]:::drop
+    C -->|Valid Handshake| D(Speed Test<br>Throughput Check):::pass
+    D -->|Too Slow| X3[Drop]:::drop
+    D -->|> Threshold| E{Xray Core Routing<br>True Payload Verification}:::pass
+    E -->|Fake 204 / HTTP Error| X4[Drop]:::drop
+    E -->|Successful Routing| F((✅ Verified Clean IPs)):::final
 ```
 
 ### Stage 1: Asynchronous TCP Probing (Layer 4)
